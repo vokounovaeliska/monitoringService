@@ -79,8 +79,7 @@ public class MonitoredEndpointServiceImpl implements MonitoredEndpointService {
         monitoredEndpoint.setName(request.getName());
         monitoredEndpoint.setUrl(request.getUrl());
         monitoredEndpoint.setMonitoredInterval(request.getMonitoredInterval());
-        repository.save(monitoredEndpoint).getId();
-        return null;
+        return repository.save(monitoredEndpoint).getId();
     }
 
     @Override

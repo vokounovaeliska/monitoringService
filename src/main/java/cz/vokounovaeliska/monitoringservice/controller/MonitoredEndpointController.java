@@ -2,11 +2,9 @@ package cz.vokounovaeliska.monitoringservice.controller;
 
 
 import cz.vokounovaeliska.monitoringservice.api.requests.AddMonitoredEndpointRequest;
-import cz.vokounovaeliska.monitoringservice.api.requests.AddUserRequest;
 import cz.vokounovaeliska.monitoringservice.api.requests.EditMonitoredEndpointRequest;
 import cz.vokounovaeliska.monitoringservice.api.services.MonitoredEndpointService;
 import cz.vokounovaeliska.monitoringservice.dto.MonitoredEndpointDTO;
-import cz.vokounovaeliska.monitoringservice.dto.UserDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

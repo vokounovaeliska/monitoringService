@@ -1,16 +1,13 @@
 package cz.vokounovaeliska.monitoringservice.controller;
 
 
-import cz.vokounovaeliska.monitoringservice.api.requests.AddMonitoredEndpointRequest;
-import cz.vokounovaeliska.monitoringservice.api.requests.AddMonitoringResultRequest;
-import cz.vokounovaeliska.monitoringservice.api.services.MonitoredEndpointService;
 import cz.vokounovaeliska.monitoringservice.api.services.MonitoringResultService;
-import cz.vokounovaeliska.monitoringservice.dto.MonitoredEndpointDTO;
 import cz.vokounovaeliska.monitoringservice.dto.MonitoringResultDTO;
-import org.hibernate.boot.spi.AdditionalJaxbMappingProducer;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 

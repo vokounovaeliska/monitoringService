@@ -1,11 +1,9 @@
 package cz.vokounovaeliska.monitoringservice.entity;
 
-import cz.vokounovaeliska.monitoringservice.implementation.service.MonitoredEndpointServiceImpl;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.OffsetDateTime;
 

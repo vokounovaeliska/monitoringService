@@ -1,8 +1,6 @@
 package cz.vokounovaeliska.monitoringservice.implementation.service;
 
-import cz.vokounovaeliska.monitoringservice.api.exception.InternalErrorException;
 import cz.vokounovaeliska.monitoringservice.api.exception.ResourceNotFoundException;
-import cz.vokounovaeliska.monitoringservice.api.requests.AddMonitoringResultRequest;
 import cz.vokounovaeliska.monitoringservice.api.services.MonitoringResultService;
 import cz.vokounovaeliska.monitoringservice.dto.MonitoringResultDTO;
 import cz.vokounovaeliska.monitoringservice.entity.MonitoringResult;
@@ -10,10 +8,8 @@ import cz.vokounovaeliska.monitoringservice.repository.MonitoringResultRepositor
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,7 +17,6 @@ import java.util.stream.Collectors;
 public class MonitoringResultServiceImpl implements MonitoringResultService {
 
     private static final Logger LOG = LoggerFactory.getLogger(MonitoringResultServiceImpl.class);
-
 
     @Autowired
     private final MonitoringResultRepository repository;
