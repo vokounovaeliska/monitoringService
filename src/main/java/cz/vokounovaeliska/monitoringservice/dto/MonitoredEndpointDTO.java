@@ -10,6 +10,6 @@ public class MonitoredEndpointDTO {
     String url;
     OffsetDateTime dateOfCreation;
     OffsetDateTime dateOfLastCheck;
-    OffsetDateTime monitoredInterval;
+    Long monitoredInterval;
     long ownerId;
 }

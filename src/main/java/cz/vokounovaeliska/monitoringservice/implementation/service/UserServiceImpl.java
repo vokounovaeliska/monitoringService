@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public long addUser(AddUserRequest userRequest) {
+    public long add(AddUserRequest userRequest) {
         try {
             return userRepository.save(new User(userRequest.getName(), userRequest.getEmail())).getId();
         } catch (

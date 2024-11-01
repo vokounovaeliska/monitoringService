@@ -4,14 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.OffsetDateTime;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AddMonitoredEndpointRequest {
-    private String name;
-    private String url;
-    private Long monitoredInterval;
-    private Long owner_id;
+public class EditMonitoredEndpointRequest {
+        private String name;
+        private String url;
+        private Long monitoredInterval;
 }

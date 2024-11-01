@@ -6,7 +6,7 @@ import cz.vokounovaeliska.monitoringservice.dto.UserDTO;
 import java.util.List;
 
 public interface UserService {
-    long addUser(AddUserRequest userRequest);
+    long add(AddUserRequest userRequest);
 
     void delete(long id);
 
