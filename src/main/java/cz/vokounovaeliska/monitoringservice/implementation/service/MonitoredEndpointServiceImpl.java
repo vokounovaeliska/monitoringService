@@ -18,6 +18,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,16 +29,14 @@ public class MonitoredEndpointServiceImpl implements MonitoredEndpointService {
 
     private static final Logger LOG = LoggerFactory.getLogger(MonitoredEndpointServiceImpl.class);
 
-
     private final MonitoredEndpointRepository repository;
+
+    private final UserService userService;
 
     public MonitoredEndpointServiceImpl(MonitoredEndpointRepository repository, UserService userService) {
         this.repository = repository;
         this.userService = userService;
     }
-
-    private final UserService userService;
-
 
     @Override
     public Long add(AddMonitoredEndpointRequest addMonitoredEndpointRequest) {
@@ -90,6 +89,12 @@ public class MonitoredEndpointServiceImpl implements MonitoredEndpointService {
     }
 
     @Override
+    public MonitoredEndpoint getEntityById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Endpoint with ID " + id + " not found."));
+    }
+
+    @Override
     public List<MonitoredEndpointDTO> getAll() {
         return repository.findAll().stream().map(this::mapEndpointToEndpointDTO).collect(Collectors.toList());
     }
@@ -106,5 +111,13 @@ public class MonitoredEndpointServiceImpl implements MonitoredEndpointService {
 
     private MonitoredEndpointDTO mapEndpointToEndpointDTO(MonitoredEndpoint monitoredEndpoint) {
         return new MonitoredEndpointDTO(monitoredEndpoint.getId(), monitoredEndpoint.getName(), monitoredEndpoint.getUrl(), monitoredEndpoint.getDateOfCreation(), monitoredEndpoint.getDateOfLastCheck(), monitoredEndpoint.getMonitoredInterval(), monitoredEndpoint.getOwner().getId());
+    }
+
+    @Override
+    public Long updateDateOfLastCheck(long endpointId){
+        final MonitoredEndpoint monitoredEndpoint = repository.findById(endpointId)
+                .orElseThrow(() -> new ResourceNotFoundException("Endpoint ID: " + endpointId + " not found."));
+        monitoredEndpoint.setDateOfLastCheck(OffsetDateTime.now());
+        return repository.save(monitoredEndpoint).getId();
     }
 }

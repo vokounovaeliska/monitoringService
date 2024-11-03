@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface MonitoringResultService {
 
-//    Long add(AddMonitoringResultRequest addMonitoringResultRequest);
-//
-//    void delete(long id);
+    Long add(MonitoringResultDTO monitoringResultDTO);
+
+    void delete(long id);
 
     MonitoringResultDTO get(long id);
 

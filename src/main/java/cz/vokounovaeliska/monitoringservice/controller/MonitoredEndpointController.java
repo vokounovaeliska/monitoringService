@@ -5,6 +5,7 @@ import cz.vokounovaeliska.monitoringservice.api.requests.AddMonitoredEndpointReq
 import cz.vokounovaeliska.monitoringservice.api.requests.EditMonitoredEndpointRequest;
 import cz.vokounovaeliska.monitoringservice.api.services.MonitoredEndpointService;
 import cz.vokounovaeliska.monitoringservice.dto.MonitoredEndpointDTO;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,17 +34,23 @@ public class MonitoredEndpointController {
     }
 
     @PostMapping()
-    public ResponseEntity<Long> add(@RequestBody AddMonitoredEndpointRequest request) {
+    public ResponseEntity<Long> add(@Valid @RequestBody AddMonitoredEndpointRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(monitoredEndpointService.add(request));
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Long> edit(@PathVariable("id") long id, @RequestBody EditMonitoredEndpointRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(monitoredEndpointService.edit(id, request));
+    public ResponseEntity<Long> edit(@PathVariable("id") long id, @Valid @RequestBody EditMonitoredEndpointRequest request) {
+        return ResponseEntity.ok().body(monitoredEndpointService.edit(id, request));
     }
 
     @GetMapping("/owner/{ownerId}")
     public ResponseEntity<List<MonitoredEndpointDTO>> getByOwnerId(@PathVariable("ownerId") long ownerId) {
         return ResponseEntity.ok().body(monitoredEndpointService.getAllByOwner(ownerId));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable("id") long id) {
+        monitoredEndpointService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

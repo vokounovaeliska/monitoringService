@@ -1,13 +1,17 @@
 package cz.vokounovaeliska.monitoringservice.implementation.service;
 
+import cz.vokounovaeliska.monitoringservice.api.exception.InternalErrorException;
 import cz.vokounovaeliska.monitoringservice.api.exception.ResourceNotFoundException;
+import cz.vokounovaeliska.monitoringservice.api.services.MonitoredEndpointService;
 import cz.vokounovaeliska.monitoringservice.api.services.MonitoringResultService;
 import cz.vokounovaeliska.monitoringservice.dto.MonitoringResultDTO;
+import cz.vokounovaeliska.monitoringservice.entity.MonitoredEndpoint;
 import cz.vokounovaeliska.monitoringservice.entity.MonitoringResult;
 import cz.vokounovaeliska.monitoringservice.repository.MonitoringResultRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,18 +25,32 @@ public class MonitoringResultServiceImpl implements MonitoringResultService {
     @Autowired
     private final MonitoringResultRepository repository;
 
-    public MonitoringResultServiceImpl(MonitoringResultRepository repository) {
+    @Autowired
+    private final MonitoredEndpointService monitoredEndpointService;
+
+    public MonitoringResultServiceImpl(MonitoringResultRepository repository, MonitoredEndpointService monitoredEndpointService) {
         this.repository = repository;
+        this.monitoredEndpointService = monitoredEndpointService;
     }
 
-
-   /* @Override
-    public Long add(AddMonitoringResultRequest addMonitoringResultRequest) {
+    @Override
+    public Long add(MonitoringResultDTO monitoringResultDTO) {
         try {
-            return repository.save(new MonitoringResult(addMonitoringResultRequest.hashCode(), addMonitoringResultRequest.getReturnedPayload(), addMonitoringResultRequest.getMonitoredEndpointId())).getId();
+            final MonitoredEndpoint monitoredEndpoint = monitoredEndpointService.getEntityById(monitoringResultDTO.getMonitoredEndpointId());
+
+            MonitoringResult monitoringResult = new MonitoringResult(
+                    monitoringResultDTO.getHttpStatusCode(),
+                    monitoringResultDTO.getReturnedPayload(),
+                    monitoringResultDTO.getReasonPhrase(),
+                    monitoredEndpoint
+            );
+            return repository.save(monitoringResult).getId();
         } catch (DataAccessException e) {
-            LOG.error("Error while adding endpoint", e);
-            throw new InternalErrorException("Error while adding endpoint");
+            LOG.error("Error while adding monitoring result: {}", e.getMessage());
+            throw new InternalErrorException("Error while adding monitoring result");
+        } catch (Exception e) {
+            LOG.error("Unexpected error while adding monitoring result: {}", e.getMessage());
+            throw new InternalErrorException("Unexpected error occurred");
         }
     }
 
@@ -41,7 +59,7 @@ public class MonitoringResultServiceImpl implements MonitoringResultService {
         if (this.get(id) != null) {
             repository.deleteById(id);
         }
-    }*/
+    }
 
     @Override
     public MonitoringResultDTO get(long id) {
@@ -63,10 +81,12 @@ public class MonitoringResultServiceImpl implements MonitoringResultService {
 
 
     private MonitoringResultDTO mapResultToResultDTO(MonitoringResult monitoringResult) {
-        return new MonitoringResultDTO(monitoringResult.getId(),
+        return new MonitoringResultDTO(
+                monitoringResult.getId(),
                 monitoringResult.getDateOfCheck(),
                 monitoringResult.getHttpStatusCode(),
                 monitoringResult.getReturnedPayload(),
+                monitoringResult.getReasonPhrase(),
                 monitoringResult.getMonitoredEndpoint().getId());
     }
 }

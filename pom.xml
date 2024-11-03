@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>cz.vokounovaeliska</groupId>
-    <artifactId>monitoring-service</artifactId>
+    <artifactId>monitoring-app</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>monitoring-service</name>
+    <name>monitoring-app</name>
     <description>Demo project for monitoring endpoints</description>
     <url/>
     <licenses>
@@ -101,6 +101,16 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents.client5</groupId>
+            <artifactId>httpclient5</artifactId>
+            <version>5.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents.core5</groupId>
+            <artifactId>httpcore5</artifactId>
+            <version>5.2.5</version>
         </dependency>
 
     </dependencies>
