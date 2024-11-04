@@ -62,6 +62,13 @@ public class UserServiceImpl implements UserService {
                 .map(this::mapUserToUserDTO).collect(Collectors.toList());
     }
 
+    @Override
+    public UserDTO findByAccessToken(String accessToken) {
+        return userRepository.findByAccessToken(accessToken)
+                .map(this::mapUserToUserDTO)
+                .orElseThrow(() -> new ResourceNotFoundException("User with access token: " + accessToken + " not found."));
+    }
+
     private UserDTO mapUserToUserDTO(User user) {
         return new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getAccessToken());
     }

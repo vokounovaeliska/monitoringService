@@ -13,4 +13,6 @@ public interface UserService {
     UserDTO get(long id);
 
     List<UserDTO> getAll();
+
+    UserDTO findByAccessToken(String accessToken);
 }
