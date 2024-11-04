@@ -34,7 +34,7 @@ public class MonitoredEndpointController {
     }
 
     @PostMapping()
-    public ResponseEntity<Long> add(@Valid @RequestBody AddMonitoredEndpointRequest request) {
+    public ResponseEntity<Long> add(@RequestBody @Valid AddMonitoredEndpointRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(monitoredEndpointService.add(request));
     }
 

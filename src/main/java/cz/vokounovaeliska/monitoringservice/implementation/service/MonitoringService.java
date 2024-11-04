@@ -17,20 +17,22 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 @Service
 public class MonitoringService {
 
     private static final Logger LOG = LoggerFactory.getLogger(MonitoringService.class);
-
     private final MonitoredEndpointService monitoredEndpointService;
     private final MonitoringResultService monitoringResultService;
-
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(10);
+    private final Map<Long, ScheduledFuture<?>> scheduledTasks = new HashMap<>();
 
     public MonitoringService(MonitoredEndpointService monitoredEndpointService, MonitoringResultService monitoringResultService) {
         this.monitoredEndpointService = monitoredEndpointService;
@@ -40,12 +42,12 @@ public class MonitoringService {
 
     private void scheduleMonitoringTasks() {
         List<MonitoredEndpointDTO> monitoredEndpoints = monitoredEndpointService.getAll();
-
         if (monitoredEndpoints != null) {
             for (MonitoredEndpointDTO endpoint : monitoredEndpoints) {
                 long interval = endpoint.getMonitoredInterval();
-                if (interval > 0) {
-                    scheduler.scheduleAtFixedRate(() -> monitorEndpoint(endpoint), 0, interval, TimeUnit.SECONDS);
+                if (!scheduledTasks.containsKey(endpoint.getId()) && interval > 0) {
+                    ScheduledFuture<?> newTask = scheduler.scheduleAtFixedRate(() -> monitorEndpoint(endpoint), 0, interval, TimeUnit.SECONDS);
+                    scheduledTasks.put(endpoint.getId(), newTask);
                 } else {
                     LOG.warn("Skipping endpoint {} with non-positive interval: {}", endpoint.getUrl(), interval);
                 }
@@ -54,6 +56,7 @@ public class MonitoringService {
             LOG.error("Monitored endpoints list is null");
         }
     }
+
 
     @Async
     public void monitorEndpoint(MonitoredEndpointDTO endpoint) {
@@ -87,14 +90,14 @@ public class MonitoringService {
         }
     }
 
-    public void addMonitoringTask(MonitoredEndpointDTO endpoint) {
-        System.out.println("added to monitor");
-        long interval = endpoint.getMonitoredInterval();
-        if (interval > 0) {
-            scheduler.scheduleAtFixedRate(() -> monitorEndpoint(endpoint), 0, interval, TimeUnit.SECONDS);
-            LOG.info("Scheduled monitoring task for endpoint: {}", endpoint.getUrl());
-        } else {
-            LOG.warn("Skipping endpoint {} with non-positive interval: {}", endpoint.getUrl(), interval);
+    public void removeScheduledTask(Long endpointId) {
+        LOG.info("Removing Scheduled task ID: {}", endpointId);
+        ScheduledFuture<?> scheduledFuture = scheduledTasks.get(endpointId);
+        if (scheduledFuture != null) {
+            scheduledFuture.cancel(true);
+            scheduledTasks.remove(endpointId);
         }
+        scheduleMonitoringTasks();
     }
+
 }

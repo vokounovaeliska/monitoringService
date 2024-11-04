@@ -57,14 +57,7 @@ public class MonitoredEndpointServiceImpl implements MonitoredEndpointService {
                     user
             );
             MonitoredEndpoint savedEndpoint = repository.save(endpoint);
-            monitoringService.addMonitoringTask(new MonitoredEndpointDTO(savedEndpoint.getId(),
-                    savedEndpoint.getName(),
-                    savedEndpoint.getUrl(),
-                    savedEndpoint.getDateOfCreation(),
-                    savedEndpoint.getDateOfLastCheck(),
-                    savedEndpoint.getMonitoredInterval(),
-                    savedEndpoint.getOwner().getId()));
-
+            monitoringService.removeScheduledTask(savedEndpoint.getId());
             return savedEndpoint.getId();
         } catch (DataIntegrityViolationException e) {
             LOG.error("Data integrity violation while adding endpoint: {}", e.getMessage());
@@ -83,6 +76,7 @@ public class MonitoredEndpointServiceImpl implements MonitoredEndpointService {
     public void delete(long id) {
         if (this.get(id) != null) {
             repository.deleteById(id);
+            monitoringService.removeScheduledTask(id);
         }
     }
 
@@ -93,7 +87,9 @@ public class MonitoredEndpointServiceImpl implements MonitoredEndpointService {
         monitoredEndpoint.setName(request.getName());
         monitoredEndpoint.setUrl(request.getUrl());
         monitoredEndpoint.setMonitoredInterval(request.getMonitoredInterval());
-        return repository.save(monitoredEndpoint).getId();
+        MonitoredEndpoint editedEndpoint = repository.save(monitoredEndpoint);
+        monitoringService.removeScheduledTask(id);
+        return editedEndpoint.getId();
     }
 
     @Override

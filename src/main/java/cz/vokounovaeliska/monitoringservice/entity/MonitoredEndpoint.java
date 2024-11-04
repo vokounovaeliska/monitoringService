@@ -1,7 +1,6 @@
 package cz.vokounovaeliska.monitoringservice.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,8 +24,6 @@ public class MonitoredEndpoint {
 
     @Setter
     @Column(nullable = true, unique = true)
-    @Pattern(regexp = "https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)",
-            message = "Invalid URL format")
     private String url;
 
     @Column(nullable = true)
