@@ -10,7 +10,6 @@ import cz.vokounovaeliska.monitoringservice.entity.MonitoringResult;
 import cz.vokounovaeliska.monitoringservice.repository.MonitoringResultRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -22,10 +21,8 @@ public class MonitoringResultServiceImpl implements MonitoringResultService {
 
     private static final Logger LOG = LoggerFactory.getLogger(MonitoringResultServiceImpl.class);
 
-    @Autowired
     private final MonitoringResultRepository repository;
 
-    @Autowired
     private final MonitoredEndpointService monitoredEndpointService;
 
     public MonitoringResultServiceImpl(MonitoringResultRepository repository, MonitoredEndpointService monitoredEndpointService) {
@@ -63,12 +60,17 @@ public class MonitoringResultServiceImpl implements MonitoringResultService {
 
     @Override
     public MonitoringResultDTO get(long id) {
-        return repository.findById(id).map(this::mapResultToResultDTO).orElseThrow(() -> new ResourceNotFoundException("Monitoring result ID: " + id + " not found."));
+        return repository.findById(id)
+                .map(this::mapResultToResultDTO)
+                .orElseThrow(() -> new ResourceNotFoundException("Monitoring result ID: " + id + " not found."));
     }
 
     @Override
     public List<MonitoringResultDTO> getAll() {
-        return repository.findAll().stream().map(this::mapResultToResultDTO).collect(Collectors.toList());
+        return repository.findAllByOrderByDateOfCheckDesc()
+                .stream()
+                .limit(500)
+                .map(this::mapResultToResultDTO).collect(Collectors.toList());
     }
 
     @Override

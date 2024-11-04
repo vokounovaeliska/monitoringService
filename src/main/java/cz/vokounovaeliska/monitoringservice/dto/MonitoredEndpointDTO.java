@@ -1,6 +1,7 @@
 package cz.vokounovaeliska.monitoringservice.dto;
 
 import lombok.Value;
+
 import java.time.OffsetDateTime;
 
 @Value

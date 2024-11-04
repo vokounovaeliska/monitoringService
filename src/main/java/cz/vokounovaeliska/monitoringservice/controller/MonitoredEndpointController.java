@@ -43,14 +43,15 @@ public class MonitoredEndpointController {
         return ResponseEntity.ok().body(monitoredEndpointService.edit(id, request));
     }
 
-    @GetMapping("/owner/{ownerId}")
-    public ResponseEntity<List<MonitoredEndpointDTO>> getByOwnerId(@PathVariable("ownerId") long ownerId) {
-        return ResponseEntity.ok().body(monitoredEndpointService.getAllByOwner(ownerId));
-    }
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable("id") long id) {
         monitoredEndpointService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/owner/{ownerId}")
+    public ResponseEntity<List<MonitoredEndpointDTO>> getByOwnerId(@PathVariable("ownerId") long ownerId) {
+        return ResponseEntity.ok().body(monitoredEndpointService.getAllByOwner(ownerId));
+    }
+
 }

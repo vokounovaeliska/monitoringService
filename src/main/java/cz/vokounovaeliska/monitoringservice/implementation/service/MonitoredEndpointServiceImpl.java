@@ -14,6 +14,7 @@ import cz.vokounovaeliska.monitoringservice.entity.User;
 import cz.vokounovaeliska.monitoringservice.repository.MonitoredEndpointRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -33,9 +34,14 @@ public class MonitoredEndpointServiceImpl implements MonitoredEndpointService {
 
     private final UserService userService;
 
-    public MonitoredEndpointServiceImpl(MonitoredEndpointRepository repository, UserService userService) {
+
+    private final MonitoringService monitoringService;
+
+
+    public MonitoredEndpointServiceImpl(MonitoredEndpointRepository repository, UserService userService, @Lazy MonitoringService monitoringService) {
         this.repository = repository;
         this.userService = userService;
+        this.monitoringService = monitoringService;
     }
 
     @Override
@@ -50,7 +56,16 @@ public class MonitoredEndpointServiceImpl implements MonitoredEndpointService {
                     addMonitoredEndpointRequest.getMonitoredInterval(),
                     user
             );
-            return repository.save(endpoint).getId();
+            MonitoredEndpoint savedEndpoint = repository.save(endpoint);
+            monitoringService.addMonitoringTask(new MonitoredEndpointDTO(savedEndpoint.getId(),
+                    savedEndpoint.getName(),
+                    savedEndpoint.getUrl(),
+                    savedEndpoint.getDateOfCreation(),
+                    savedEndpoint.getDateOfLastCheck(),
+                    savedEndpoint.getMonitoredInterval(),
+                    savedEndpoint.getOwner().getId()));
+
+            return savedEndpoint.getId();
         } catch (DataIntegrityViolationException e) {
             LOG.error("Data integrity violation while adding endpoint: {}", e.getMessage());
             throw new BadRequestException("Endpoint with url: " + addMonitoredEndpointRequest.getUrl() + " already exists");
@@ -114,7 +129,7 @@ public class MonitoredEndpointServiceImpl implements MonitoredEndpointService {
     }
 
     @Override
-    public Long updateDateOfLastCheck(long endpointId){
+    public Long updateDateOfLastCheck(long endpointId) {
         final MonitoredEndpoint monitoredEndpoint = repository.findById(endpointId)
                 .orElseThrow(() -> new ResourceNotFoundException("Endpoint ID: " + endpointId + " not found."));
         monitoredEndpoint.setDateOfLastCheck(OffsetDateTime.now());

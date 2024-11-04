@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
 @Entity(name = "monitored_endpoint")
 @NoArgsConstructor
@@ -43,11 +44,14 @@ public class MonitoredEndpoint {
     @JoinColumn(name = "user_id", nullable = false)
     private User owner;
 
+    @OneToMany(mappedBy = "monitoredEndpoint", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<MonitoringResult> monitoringResults;
+
     public MonitoredEndpoint(String name, String url, Long monitoredInterval, User owner) {
         this.name = name;
         this.url = url;
         this.dateOfCreation = OffsetDateTime.now();
-        this.dateOfLastCheck = OffsetDateTime.now();
+        this.dateOfLastCheck = null;
         this.monitoredInterval = monitoredInterval;
         this.owner = owner;
     }
