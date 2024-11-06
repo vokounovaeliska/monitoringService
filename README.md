@@ -55,7 +55,7 @@ This project is a simple application for monitoring URL addresses, built with Ja
 
 3. **Run the application**:
    ```bash
-   ./mvnw spring-boot:run
+   mvn spring-boot:run
    ```
 
 ## API Endpoints
