@@ -1,7 +1,6 @@
 # Endpoints Monitoring Service
 
-This project is a REST API JSON microservice built with Java and Spring Boot, designed to monitor specified HTTP/HTTPS URLs. The microservice supports basic CRUD operations for managing monitored URLs, performs background monitoring, and records status codes.
-
+This project is a simple application for monitoring URL addresses, built with Java and Spring Boot as a REST API. The application supports basic CRUD operations for managing monitored URLs, performs periodic availability checks, and records status codes.
 ## Features
 
 - **CRUD Operations**: Create, update, delete, and list monitored URLs.
