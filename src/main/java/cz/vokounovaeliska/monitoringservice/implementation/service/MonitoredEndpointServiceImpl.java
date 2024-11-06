@@ -5,6 +5,7 @@ import cz.vokounovaeliska.monitoringservice.api.exception.InternalErrorException
 import cz.vokounovaeliska.monitoringservice.api.exception.ResourceNotFoundException;
 import cz.vokounovaeliska.monitoringservice.api.requests.AddMonitoredEndpointRequest;
 import cz.vokounovaeliska.monitoringservice.api.requests.EditMonitoredEndpointRequest;
+import cz.vokounovaeliska.monitoringservice.api.services.MonitorService;
 import cz.vokounovaeliska.monitoringservice.api.services.MonitoredEndpointService;
 import cz.vokounovaeliska.monitoringservice.api.services.UserService;
 import cz.vokounovaeliska.monitoringservice.dto.MonitoredEndpointDTO;
@@ -35,10 +36,10 @@ public class MonitoredEndpointServiceImpl implements MonitoredEndpointService {
     private final UserService userService;
 
 
-    private final MonitoringService monitoringService;
+    private final MonitorService monitoringService;
 
 
-    public MonitoredEndpointServiceImpl(MonitoredEndpointRepository repository, UserService userService, @Lazy MonitoringService monitoringService) {
+    public MonitoredEndpointServiceImpl(MonitoredEndpointRepository repository, UserService userService, @Lazy MonitorService monitoringService) {
         this.repository = repository;
         this.userService = userService;
         this.monitoringService = monitoringService;
@@ -75,8 +76,8 @@ public class MonitoredEndpointServiceImpl implements MonitoredEndpointService {
     @Override
     public void delete(long id) {
         if (this.get(id) != null) {
-            repository.deleteById(id);
             monitoringService.removeScheduledTask(id);
+            repository.deleteById(id);
         }
     }
 
@@ -87,8 +88,8 @@ public class MonitoredEndpointServiceImpl implements MonitoredEndpointService {
         monitoredEndpoint.setName(request.getName());
         monitoredEndpoint.setUrl(request.getUrl());
         monitoredEndpoint.setMonitoredInterval(request.getMonitoredInterval());
-        MonitoredEndpoint editedEndpoint = repository.save(monitoredEndpoint);
         monitoringService.removeScheduledTask(id);
+        MonitoredEndpoint editedEndpoint = repository.save(monitoredEndpoint);
         return editedEndpoint.getId();
     }
 
