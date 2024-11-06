@@ -50,7 +50,7 @@ public class MonitoringServiceImpl implements MonitorService {
                     ScheduledFuture<?> newTask = scheduler.scheduleAtFixedRate(() -> monitorEndpoint(endpoint), 0, interval, TimeUnit.SECONDS);
                     scheduledTasks.put(endpoint.getId(), newTask);
                 } else {
-                    LOG.warn("Skipping endpoint {} with non-positive interval: {}", endpoint.getUrl(), interval);
+                    LOG.warn("Skipping endpoint {} with non-positive interval or already added endpoint: {}", endpoint.getUrl(), interval);
                 }
             }
         } else {

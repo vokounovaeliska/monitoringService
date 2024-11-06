@@ -3,6 +3,7 @@ package cz.vokounovaeliska.monitoringservice;
 import cz.vokounovaeliska.monitoringservice.api.exception.BadRequestException;
 import cz.vokounovaeliska.monitoringservice.api.requests.AddMonitoredEndpointRequest;
 import cz.vokounovaeliska.monitoringservice.dto.MonitoredEndpointDTO;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
@@ -11,7 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
-
+@Transactional
 public class EndpointIntegrationTests extends IntegrationTests {
 
     @Test

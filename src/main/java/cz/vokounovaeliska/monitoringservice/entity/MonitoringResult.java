@@ -34,7 +34,7 @@ public class MonitoringResult {
     private String returnedPayload;
 
     @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "monitored_endpoint_id", nullable = false)
     private MonitoredEndpoint monitoredEndpoint;
 
